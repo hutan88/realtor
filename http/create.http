@@ -1,8 +1,0 @@
- POST  http://127.0.0.1:3000/report/income HTTP/1.1
-content-type: application/json
-
-{
-  "id": "1",
-  "name" : "hootan"
-}
-
