@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { SignupInterface } from '../../interfaces/auth.interface';
 import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -20,10 +21,13 @@ export class AuthService {
         user_type:"BUYER"
    }})
 
-   if(!createdUser)
-   {
-    throw new BadRequestException("this Email is Exists");
-   }
+   const token = await jwt.sign({
+    name,
+    id: createdUser.id
+   },"fafsasfaf",{
+    expiresIn:3600000
+   })
+   return token;
 }
 
 async hashPassword(password)
