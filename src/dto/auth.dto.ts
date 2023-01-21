@@ -1,7 +1,6 @@
-import { IsString, IsNotEmpty, IsEmail } from "class-validator";
-import { Matches, MinLength } from "class-validator/types/decorator/decorators";
+import { IsString, IsNotEmpty, IsEmail, Matches, MinLength  } from "class-validator";
 
-export class Auth{
+export class SignupDto{
     
     @IsNotEmpty()
     @IsString()
