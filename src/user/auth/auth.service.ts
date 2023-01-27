@@ -11,7 +11,7 @@ import { UserType } from '@prisma/client';
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService) {}
-  async signup(body: SignupInterface,userType: UserType) {
+  async signup(body: SignupInterface, userType: UserType) {
     const { email, password, phone, name } = body;
     const hashed = await this.hashPassword(password);
     const createdUser = await this.prismaService.user.create({
@@ -20,7 +20,7 @@ export class AuthService {
         password: hashed,
         phone,
         name,
-        user_type: userType
+        user_type: userType,
       },
     });
 

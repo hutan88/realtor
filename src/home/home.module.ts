@@ -6,11 +6,14 @@ import { HomeController } from './home.controller';
 import { HomeService } from './home.service';
 
 @Module({
-  imports:[PrismaModule],
+  imports: [PrismaModule],
   controllers: [HomeController],
-  providers: [HomeService,{
-    provide: APP_INTERCEPTOR,
-    useClass: ClassSerializerInterceptor
-  }]
+  providers: [
+    HomeService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
 })
 export class HomeModule {}
