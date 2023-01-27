@@ -29,7 +29,7 @@ export class SignupDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  productKey?: string
+  productKey?: string;
 }
 
 export class SigninDto {

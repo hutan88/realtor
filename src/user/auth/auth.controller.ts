@@ -10,23 +10,25 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup/:userType')
-  async signup(@Body() body: SignupDto,@Param('userType',new ParseEnumPipe(UserType)) userType: UserType) {
-
-    if(userType !== UserType.BUYER)
-    {
-        if(!body.productKey)
-        {
-          throw new UnauthorizedException();
-        }
-        const validateProductKey = `${body.email}-${userType}-${process.env.PRODUCT_KEY_SECRET}`;
-        const isValidateProductKey = await bcrypt.compare(validateProductKey,body.productKey);
-        if(!isValidateProductKey)
-        {
-          throw new UnauthorizedException();
-        }
+  async signup(
+    @Body() body: SignupDto,
+    @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
+  ) {
+    if (userType !== UserType.BUYER) {
+      if (!body.productKey) {
+        throw new UnauthorizedException();
+      }
+      const validateProductKey = `${body.email}-${userType}-${process.env.PRODUCT_KEY_SECRET}`;
+      const isValidateProductKey = await bcrypt.compare(
+        validateProductKey,
+        body.productKey,
+      );
+      if (!isValidateProductKey) {
+        throw new UnauthorizedException();
+      }
     }
 
-    return this.authService.signup(body,userType);
+    return this.authService.signup(body, userType);
   }
 
   @Post('signin')
