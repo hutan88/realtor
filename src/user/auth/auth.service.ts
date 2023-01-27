@@ -1,7 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { SignupInterface } from '../../interfaces/auth.interface';
+import { SigninInterface, SignupInterface } from '../../interfaces/auth.interface';
 import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,6 @@ export class AuthService {
 
     const {email,password,phone,name}= body;
     const hashed=  await this.hashPassword(password);
-    console.log(hashed);
    const createdUser= await this.prismaService.user.create({
     data:{
         email, 
@@ -20,16 +20,51 @@ export class AuthService {
         user_type:"BUYER"
    }})
 
-   if(!createdUser)
-   {
-    throw new BadRequestException("this Email is Exists");
-   }
+   const token = await this.signToken(createdUser.id,createdUser.name);
+   return token;
 }
 
-async hashPassword(password)
+async signin(body: SigninInterface)
+{
+    const { email,password} = body;
+
+    const getUser = await this.prismaService.user.findFirst({
+        where:{
+        
+           email
+        }})
+    const hashed = await this.comparePassword(password,getUser.password);
+
+        if(getUser && hashed)
+        {
+            const token = await this.signToken(getUser.id,getUser.name);
+            return token;
+        
+        }
+
+}
+
+async signToken(userId,name)
+{
+    const token = await jwt.sign({
+        name,
+        id: userId
+       },"fafsasfaf",{
+        expiresIn:3600000
+       })
+       return token;   
+}
+
+async hashPassword(password: string)
 {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password,saltRounds);
     return hashedPassword;
+}
+
+async comparePassword(plainPass,hashed)
+{
+    const comparePass = bcrypt.compare(plainPass,hashed)
+    return comparePass;
 }
 }
