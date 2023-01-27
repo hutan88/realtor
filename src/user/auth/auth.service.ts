@@ -3,6 +3,7 @@ import { SigninInterface, SignupInterface } from '../../interfaces/auth.interfac
 import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken';
+import { UserType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +45,7 @@ async signin(body: SigninInterface)
 
 }
 
-async signToken(userId,name)
+async signToken(userId: number,name: string)
 {
     const token = await jwt.sign({
         name,
@@ -62,9 +63,16 @@ async hashPassword(password: string)
     return hashedPassword;
 }
 
-async comparePassword(plainPass,hashed)
+async comparePassword(plainPass: string,hashed: string)
 {
     const comparePass = bcrypt.compare(plainPass,hashed)
     return comparePass;
+}
+
+generateProductKey(email: string,userType: UserType)
+{
+    const string = `${email}-${userType}-${process.env.PRODUCT_KEY_SECRET}`
+    
+    return bcrypt.hash(string,10);
 }
 }
