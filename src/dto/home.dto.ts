@@ -29,6 +29,7 @@ export class HomeDto {
     return this.listed_date;
   }
   price: number;
+  image: string
 
   @Exclude()
   land_size: number;
